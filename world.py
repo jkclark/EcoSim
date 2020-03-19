@@ -1,3 +1,15 @@
+'''This module contains classes which represent the world of the ecosystem.
+
+Ideas:
+    - Some spaces should have rocks which make them inacessible to certain animals.
+    - Some spaces should have trees which certain animals can interact with.
+    - Some spaces should have water which makes the inaccessible to certain animals.
+        - Water is also drinkable.
+
+    - Maybe cells should have enter() and exit() functions?
+'''
+
+
 class World(object):
 
     """Docstring for World. """
