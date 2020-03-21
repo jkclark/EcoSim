@@ -14,9 +14,7 @@ class World(object):
 
     """Docstring for World. """
 
-    GRID_SIZE = 10
-
-    def __init__(self, grid_size):
+    def __init__(self, grid_size=10):
         """TODO: to be defined. """
         self.grid_size = grid_size
         self.grid = {
