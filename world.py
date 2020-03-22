@@ -40,6 +40,12 @@ class WorldCell(object):
         self.x_pos = x_pos
         self.y_pos = y_pos
 
+    def __eq__(self, other):
+        if (self.x_pos == other.x_pos
+           and self.y_pos == other.y_pos):
+            return True
+        return False
+
     @property
     def location(self):
         return (self.x_pos, self.y_pos)

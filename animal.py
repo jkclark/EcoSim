@@ -1,4 +1,3 @@
-from functools import wraps
 from random import choice, random
 
 
@@ -25,6 +24,10 @@ class Animal(object):
 
         self._hunger = 100
         self._energy = 100
+
+    @property
+    def world(self):
+        return self._world
 
     @property
     def location(self):
