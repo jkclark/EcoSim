@@ -11,34 +11,38 @@ Ideas:
 
 
 class World(object):
-
-    """Docstring for World. """
-
     def __init__(self, grid_size=10):
-        """TODO: to be defined. """
-        self.grid_size = grid_size
-        self.grid = {
-            (x, y): WorldCell(x, y, self)
+        self._grid_size = grid_size
+        self._grid = {
+            (x, y): WorldCell(self, x, y)
             for x in range(grid_size)
             for y in range(grid_size)
         }
 
     def get_cell(self, x, y):
         try:
-            return self.grid[(x, y)]
+            return self._grid[(x, y)]
         except KeyError:
             return None
 
 
 class WorldCell(object):
+    def __init__(self, world, x_pos, y_pos):
+        self._world = world
+        self._x_pos = x_pos
+        self._y_pos = y_pos
 
-    """Docstring for WorldCell. """
+    @property
+    def world(self):
+        return self._world
 
-    def __init__(self, x_pos, y_pos, grid):
-        """TODO: to be defined. """
-        self.grid = grid
-        self.x_pos = x_pos
-        self.y_pos = y_pos
+    @property
+    def x_pos(self):
+        return self._x_pos
+
+    @property
+    def y_pos(self):
+        return self._y_pos
 
     def __eq__(self, other):
         if (self.x_pos == other.x_pos
@@ -54,12 +58,12 @@ class WorldCell(object):
         # FIXME: I don't like the 'and' condition here because we check that
         #        condition up to 9 times, when we know it will apply only once.
         return [
-            self.grid.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
+            self.world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
             for x_delta in [-1, 0, 1]
             for y_delta in [-1, 0, 1]
-            if self.grid.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
+            if self.world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
             and not x_delta == y_delta == 0
         ]
 
     def __repr__(self):
-        return f'Cell at ({self.x_pos}, {self.y_pos})'
+        return f'Cell at ({self._x_pos}, {self._y_pos})'

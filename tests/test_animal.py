@@ -10,26 +10,51 @@ def create_test_animal():
 
 def test_step():
     animal = create_test_animal()
-    assert animal.location == WorldCell(3, 3, animal.world)
+    assert animal.location == WorldCell(animal.world, 3, 3)
     animal.step()
     assert animal.location in (
-        WorldCell(x, y, animal.world)
+        WorldCell(animal.world, x, y)
         for x in range(2, 5)
         for y in range(2, 5)
         if not x == y == 3
     )
 
 
-# FIXME: This is actually testing the spend-energy part of animal.step.
-#        We need to come up with a way of testing spend_energy() on its own.
-def test_spend_energy():
+# TODO: We should also check to see if the decorated function gets called or not.
+def test_spend_energy_success():
     animal = create_test_animal()
-    assert animal.energy == 100
-    animal.step()
-    assert animal.energy == 90
 
-    animal2 = create_test_animal()
-    animal2.speed = 2
-    assert animal2.energy == 100
-    animal2.move()
-    assert animal2.energy == 80
+    @Animal.spend_energy(1)
+    def test_func(self):
+        pass
+    setattr(Animal, 'test_func', test_func)
+
+    assert animal.energy == 100
+    animal.test_func()
+    assert animal.energy == 99
+
+
+def test_spend_energy_insufficient_energy():
+    animal = create_test_animal()
+
+    @Animal.spend_energy(101)
+    def test_func(self):
+        pass
+    setattr(Animal, 'test_func', test_func)
+
+    assert animal.energy == 100
+    animal.test_func()
+    assert animal.energy == 100
+
+
+def test_spend_energy_invalid_value():
+    animal = create_test_animal()
+
+    @Animal.spend_energy("abc")
+    def test_func(self):
+        pass
+    setattr(Animal, 'test_func', test_func)
+
+    assert animal.energy == 100
+    animal.test_func()
+    assert animal.energy == 100

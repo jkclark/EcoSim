@@ -15,14 +15,13 @@ class Animal(object):
     '''
 
     def __init__(self, world, x_pos, y_pos, speed):
-        """TODO: to be defined. """
         self._world = world
         self._location = world.get_cell(x_pos, y_pos)
 
         self._sex = 'M' if random() < 0.5 else 'F'
         self._speed = speed
 
-        self._hunger = 100
+        self._health = 100
         self._energy = 100
 
     @property
@@ -38,6 +37,18 @@ class Animal(object):
         self._location = new_location
 
     @property
+    def sex(self):
+        return self._sex
+
+    @property
+    def speed(self):
+        return self._speed
+
+    @property
+    def health(self):
+        return self._health
+
+    @property
     def energy(self):
         return self._energy
 
@@ -48,8 +59,14 @@ class Animal(object):
     def spend_energy(cost):
         def real_decorator(func):
             def wrapper(*args):
-                func(args[0])
-                setattr(args[0], 'energy', getattr(args[0], 'energy') - cost)
+                try:
+                    if cost > args[0].energy:
+                        return
+                    setattr(args[0], 'energy', getattr(args[0], 'energy') - cost)
+                except TypeError:
+                    print('Error: "Cost" is not a valid number.')
+                else:
+                    func(args[0])
             return wrapper
         return real_decorator
 
