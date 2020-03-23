@@ -14,7 +14,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            export PYTHONPATH="${PYTHONPATH}:~/repo"
+            echo "/home/circleci/repo/" > /home/circleci/venv/lib/python3.6/site-packages/add_proj_to_path.pth
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
