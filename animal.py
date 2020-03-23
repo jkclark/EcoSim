@@ -70,6 +70,7 @@ class Animal(object):
             return wrapper
         return real_decorator
 
+    # TODO: Add an option to step to a specific location.
     @spend_energy(10)
     def step(self):
         '''Take a step in a random direction.'''
