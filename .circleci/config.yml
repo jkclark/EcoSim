@@ -14,8 +14,8 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            echo "/home/circleci/repo/" > /home/circleci/repo/venv/lib/python3.6/site-packages/add_proj_to_path.pth
             python3 -m venv venv
+            echo "/home/circleci/repo/" > /home/circleci/repo/venv/lib/python3.6/site-packages/add_proj_to_path.pth
             . venv/bin/activate
             pip install -r requirements.txt
       # Step 3: run linter and tests
