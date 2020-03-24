@@ -6,6 +6,8 @@ Ideas:
     - Some spaces should have water which makes the inaccessible to certain animals.
         - Water is also drinkable.
     - Maybe cells should have enter() and exit() functions?
+
+    - Spaces should know what Animals are in them.
 '''
 
 
@@ -31,9 +33,14 @@ class WorldCell(object):
         self._x_pos = x_pos
         self._y_pos = y_pos
 
-    @property
-    def world(self):
-        return self._world
+    def __eq__(self, other):
+        if (self.x_pos == other.x_pos
+           and self.y_pos == other.y_pos):
+            return True
+        return False
+
+    def __repr__(self):
+        return f'Cell at ({self._x_pos}, {self._y_pos})'
 
     @property
     def x_pos(self):
@@ -43,22 +50,13 @@ class WorldCell(object):
     def y_pos(self):
         return self._y_pos
 
-    def __eq__(self, other):
-        if (self.x_pos == other.x_pos
-           and self.y_pos == other.y_pos):
-            return True
-        return False
-
     def get_adjacent_cells(self):
         # FIXME: I don't like the 'and' condition here because we check that
         #        condition up to 9 times, when we know it will apply only once.
         return [
-            self.world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
+            self._world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
             for x_delta in [-1, 0, 1]
             for y_delta in [-1, 0, 1]
-            if self.world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
+            if self._world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
             and not x_delta == y_delta == 0
         ]
-
-    def __repr__(self):
-        return f'Cell at ({self._x_pos}, {self._y_pos})'

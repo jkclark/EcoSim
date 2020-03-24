@@ -1,4 +1,4 @@
-from random import choice, random
+from random import choice, choices
 
 
 class Animal(object):
@@ -14,11 +14,16 @@ class Animal(object):
         self._world = world
         self._location = world.get_cell(x_pos, y_pos)
 
-        self._sex = 'M' if random() < 0.5 else 'F'
         self._speed = speed
 
-        self._health = 100
         self._energy = self._max_energy = 100
+
+    def __repr__(self):
+        return (
+            '### Animal ###\n'
+            f'# Location: ({self.location.x_pos}, {self.location.y_pos})'
+            '\n##############\n'
+        )
 
     @property
     def world(self):
@@ -31,10 +36,6 @@ class Animal(object):
     @location.setter
     def location(self, new_location):
         self._location = new_location
-
-    @property
-    def speed(self):
-        return self._speed
 
     @property
     def energy(self):
@@ -62,6 +63,20 @@ class Animal(object):
             return wrapper
         return real_decorator
 
+    def do_turn(self):
+        CHANCE_DO_NOTHING = 0
+        CHANCE_MOVE = 1
+        actions = ['pass', 'move']
+        action = choices(actions, weights=[CHANCE_DO_NOTHING, CHANCE_MOVE], k=1)[0]
+        if action == 'pass':
+            pass
+        if action == 'move':
+            self.move()
+
+    def move(self):
+        for i in range(self._speed):
+            self.step()
+
     @spend_energy(10)
     def step(self, new_location=None):
         '''Step to a specific location, or step in a random direction if no location is provided.'''
@@ -73,7 +88,3 @@ class Animal(object):
                 return f'Error: Cannot move to {new_location} from {self.location}.'
         else:
             self.location = choice(self.location.get_adjacent_cells())
-
-    def move(self):
-        for i in range(self.speed):
-            self.step()
