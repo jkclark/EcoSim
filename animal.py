@@ -6,12 +6,8 @@ class Animal(object):
 
     Ideas:
         - Be able to get the number of a animals of a certain species in the world
-        - Animals should have hunger/thirst and health
         - Animals should be able to die
-        - Animals can have different speeds which determine how fast they move through the world
         - Animals need to be able to reproduce
-        - Actions performed by animals (moving, reproducing, fighting, etc) can have costs
-            - Maybe this is a good use case for a decorator?
     '''
 
     def __init__(self, world, x_pos, y_pos, speed):
@@ -22,7 +18,7 @@ class Animal(object):
         self._speed = speed
 
         self._health = 100
-        self._energy = 100
+        self._energy = self._max_energy = 100
 
     @property
     def world(self):
@@ -37,16 +33,8 @@ class Animal(object):
         self._location = new_location
 
     @property
-    def sex(self):
-        return self._sex
-
-    @property
     def speed(self):
         return self._speed
-
-    @property
-    def health(self):
-        return self._health
 
     @property
     def energy(self):
@@ -54,27 +42,37 @@ class Animal(object):
 
     @energy.setter
     def energy(self, value):
-        self._energy = value
+        if not type(value) == int or value > self._max_energy or value < 0:
+            print('Error: Cannot set energy to {value}.')
+        else:
+            self._energy = value
 
     def spend_energy(cost):
         def real_decorator(func):
-            def wrapper(*args):
+            def wrapper(*args, **kwargs):
                 try:
-                    if cost > args[0].energy:
+                    if cost > args[0].energy or cost < 0:
                         return
-                    setattr(args[0], 'energy', getattr(args[0], 'energy') - cost)
                 except TypeError:
                     print('Error: "Cost" is not a valid number.')
                 else:
-                    func(args[0])
+                    # A truthy return value from func indicates the action was not performed.
+                    if not func(args[0], **kwargs):
+                        setattr(args[0], 'energy', getattr(args[0], 'energy') - cost)
             return wrapper
         return real_decorator
 
-    # TODO: Add an option to step to a specific location.
     @spend_energy(10)
-    def step(self):
-        '''Take a step in a random direction.'''
-        self.location = choice(self.location.get_adjacent_cells())
+    def step(self, new_location=None):
+        '''Step to a specific location, or step in a random direction if no location is provided.'''
+        adjacent_cells = self.location.get_adjacent_cells()
+        if new_location:
+            if new_location in adjacent_cells:
+                self.location = new_location
+            else:
+                return f'Error: Cannot move to {new_location} from {self.location}.'
+        else:
+            self.location = choice(self.location.get_adjacent_cells())
 
     def move(self):
         for i in range(self.speed):

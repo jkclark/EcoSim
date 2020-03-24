@@ -8,6 +8,41 @@ def create_test_animal(x_pos=3, y_pos=3, speed=1):
     return animal
 
 
+def test_set_energy_success():
+    animal = create_test_animal()
+    assert animal.energy == 100
+
+    animal.energy = 50
+    assert animal.energy == 50
+
+
+def test_set_energy_non_int():
+    animal = create_test_animal()
+    assert animal.energy == 100
+
+    animal.energy = 50.00
+    assert animal.energy == 100
+
+    animal.energy = "fifty"
+    assert animal.energy == 100
+
+
+def test_set_energy_negative():
+    animal = create_test_animal()
+    assert animal.energy == 100
+
+    animal.energy = -50
+    assert animal.energy == 100
+
+
+def test_set_energy_greater_than_max():
+    animal = create_test_animal()
+    assert animal.energy == 100
+
+    animal.energy = 200
+    assert animal.energy == 100
+
+
 # TODO: We should also check to see if the decorated function gets called or not.
 def test_spend_energy_success():
     animal = create_test_animal()
@@ -48,9 +83,11 @@ def test_spend_energy_invalid_value():
     assert animal.energy == 100
 
 
-def test_step():
+def test_step_random():
+    '''Test stepping to a randomly-chosen location.'''
     animal = create_test_animal()
     assert animal.location == WorldCell(animal.world, 3, 3)
+
     animal.step()
     assert animal.location in (
         WorldCell(animal.world, x, y)
@@ -60,9 +97,32 @@ def test_step():
     )
 
 
+def test_step_specific_success():
+    '''Test successfully stepping to a specific location.'''
+    animal = create_test_animal()
+    assert animal.location == WorldCell(animal.world, 3, 3)
+    assert animal.energy == 100
+
+    animal.step(new_location=WorldCell(animal.world, 3, 4))
+    assert animal.location == WorldCell(animal.world, 3, 4)
+    assert animal.energy == 90
+
+
+def test_step_specific_invalid_location():
+    '''Test attempting to step to an invalid location.'''
+    animal = create_test_animal()
+    assert animal.location == WorldCell(animal.world, 3, 3)
+    assert animal.energy == 100
+
+    animal.step(new_location=WorldCell(animal.world, 5, 5))
+    assert animal.location == WorldCell(animal.world, 3, 3)
+    assert animal.energy == 100  # No energy should have been spent.
+
+
 def test_move():
     animal = create_test_animal(3, 3, 2)
     assert animal.location == WorldCell(animal.world, 3, 3)
+
     animal.move()
     assert animal.location in (
         WorldCell(animal.world, x, y)

@@ -5,7 +5,6 @@ Ideas:
     - Some spaces should have trees which certain animals can interact with.
     - Some spaces should have water which makes the inaccessible to certain animals.
         - Water is also drinkable.
-
     - Maybe cells should have enter() and exit() functions?
 '''
 
@@ -49,10 +48,6 @@ class WorldCell(object):
            and self.y_pos == other.y_pos):
             return True
         return False
-
-    @property
-    def location(self):
-        return (self.x_pos, self.y_pos)
 
     def get_adjacent_cells(self):
         # FIXME: I don't like the 'and' condition here because we check that
