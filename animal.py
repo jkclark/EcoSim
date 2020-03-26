@@ -11,19 +11,17 @@ class Animal(object):
     '''
 
     def __init__(self, world, x_pos, y_pos, speed):
+        # Location
         self._world = world
         self._location = world.get_cell(x_pos, y_pos)
+        world.add_animal(self)
 
         self._speed = speed
 
         self._energy = self._max_energy = 100
 
     def __repr__(self):
-        return (
-            '### Animal ###\n'
-            f'# Location: ({self.location.x_pos}, {self.location.y_pos})'
-            '\n##############\n'
-        )
+        return f'Animal at {self._location}'
 
     @property
     def world(self):
@@ -35,6 +33,8 @@ class Animal(object):
 
     @location.setter
     def location(self, new_location):
+        self._location.remove_animal(self)
+        new_location.add_animal(self)
         self._location = new_location
 
     @property

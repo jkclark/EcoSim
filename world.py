@@ -20,11 +20,29 @@ class World(object):
             for y in range(grid_size)
         }
 
+        self._animals = []
+
     def get_cell(self, x, y):
         try:
             return self._grid[(x, y)]
         except KeyError:
             return None
+
+    @property
+    def animals(self):
+        return self._animals
+
+    def add_animal(self, animal):
+        self._animals.append(animal)
+
+        # Add the animal to its current WorldCell too
+        self.get_cell(animal.location.x_pos, animal.location.y_pos).add_animal(animal)
+
+    def remove_animal(self, animal):
+        try:
+            self._animals.remove(animal)
+        except ValueError:
+            print(f'Error: Cannot remove animal from {self}.')
 
 
 class WorldCell(object):
@@ -33,14 +51,26 @@ class WorldCell(object):
         self._x_pos = x_pos
         self._y_pos = y_pos
 
+        self._animals = []
+
     def __eq__(self, other):
-        if (self.x_pos == other.x_pos
-           and self.y_pos == other.y_pos):
+        if (
+            self._world == other.world
+            and self._x_pos == other.x_pos
+            and self._y_pos == other.y_pos
+        ):
             return True
         return False
 
     def __repr__(self):
-        return f'Cell at ({self._x_pos}, {self._y_pos})'
+        return f'WorldCell at ({self._x_pos}, {self._y_pos})'
+
+    def __str__(self):
+        return f'({self._x_pos}, {self._y_pos})'
+
+    @property
+    def world(self):
+        return self._world
 
     @property
     def x_pos(self):
@@ -49,6 +79,19 @@ class WorldCell(object):
     @property
     def y_pos(self):
         return self._y_pos
+
+    @property
+    def animals(self):
+        return self._animals
+
+    def add_animal(self, animal):
+        self._animals.append(animal)
+
+    def remove_animal(self, animal):
+        try:
+            self._animals.remove(animal)
+        except ValueError:
+            print(f'Error: Cannot remove animal from {self}.')
 
     def get_adjacent_cells(self):
         # FIXME: I don't like the 'and' condition here because we check that
