@@ -22,6 +22,9 @@ class World(object):
 
         self._animals = []
 
+    def __repr__(self):
+        return f'World(grid_size={self._grid_size})'
+
     def get_cell(self, x, y):
         try:
             return self._grid[(x, y)]

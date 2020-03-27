@@ -30,11 +30,26 @@ def test_get_cell_invalid_location():
 
 def test_add_and_remove_animal_success():
     world = create_test_world()
-    animal = Bunch(location=Bunch(x_pos=0, y_pos=0))
     assert world.animals == []
 
+    animal = Bunch(location=Bunch(x_pos=0, y_pos=0))
     world.add_animal(animal)
     assert world.animals == [animal]
 
     world.remove_animal(animal)
     assert world.animals == []
+
+
+def test_remove_animal_no_such_animal(capsys):
+    world = create_test_world()
+    assert world.animals == []
+
+    animal = Bunch(location=Bunch(x_pos=0, y_pos=0))
+    world.add_animal(animal)
+    assert world.animals == [animal]
+
+    fake_animal = Bunch()
+    world.remove_animal(fake_animal)
+    assert world.animals == [animal]
+    out, _ = capsys.readouterr()
+    assert out == 'Error: Cannot remove animal from World(grid_size=10).\n'

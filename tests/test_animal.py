@@ -8,6 +8,11 @@ def create_test_animal(x_pos=3, y_pos=3, speed=1):
     return animal
 
 
+def test_repr():
+    animal = create_test_animal(x_pos=1, y_pos=1)
+    assert repr(animal) == 'Animal at (1, 1)'
+
+
 def test_set_energy_success():
     animal = create_test_animal()
     assert animal.energy == 100
@@ -16,31 +21,39 @@ def test_set_energy_success():
     assert animal.energy == 50
 
 
-def test_set_energy_non_int():
+def test_set_energy_non_int(capsys):
     animal = create_test_animal()
     assert animal.energy == 100
 
     animal.energy = 50.00
     assert animal.energy == 100
+    out, _ = capsys.readouterr()
+    assert out == 'Error: Cannot set energy to 50.0.\n'
 
     animal.energy = "fifty"
     assert animal.energy == 100
+    out, _ = capsys.readouterr()
+    assert out == 'Error: Cannot set energy to fifty.\n'
 
 
-def test_set_energy_negative():
+def test_set_energy_negative(capsys):
     animal = create_test_animal()
     assert animal.energy == 100
 
     animal.energy = -50
     assert animal.energy == 100
+    out, _ = capsys.readouterr()
+    assert out == 'Error: Cannot set energy to -50.\n'
 
 
-def test_set_energy_greater_than_max():
+def test_set_energy_greater_than_max(capsys):
     animal = create_test_animal()
     assert animal.energy == 100
 
     animal.energy = 200
     assert animal.energy == 100
+    out, _ = capsys.readouterr()
+    assert out == 'Error: Cannot set energy to 200.\n'
 
 
 # TODO: We should also check to see if the decorated function gets called or not.
@@ -57,7 +70,7 @@ def test_spend_energy_success():
     assert animal.energy == 99
 
 
-def test_spend_energy_insufficient_energy():
+def test_spend_energy_insufficient_energy(capsys):
     animal = create_test_animal()
 
     @Animal.spend_energy(101)
@@ -70,7 +83,7 @@ def test_spend_energy_insufficient_energy():
     assert animal.energy == 100
 
 
-def test_spend_energy_invalid_value():
+def test_spend_energy_invalid_value(capsys):
     animal = create_test_animal()
 
     @Animal.spend_energy("abc")
@@ -81,6 +94,8 @@ def test_spend_energy_invalid_value():
     assert animal.energy == 100
     animal.test_func()
     assert animal.energy == 100
+    out, _ = capsys.readouterr()
+    assert out == 'Error: abc is not a valid number.\n'
 
 
 def test_step_random():
@@ -108,7 +123,7 @@ def test_step_specific_success():
     assert animal.energy == 90
 
 
-def test_step_specific_invalid_location():
+def test_step_specific_invalid_location(capsys):
     '''Test attempting to step to an invalid location.'''
     animal = create_test_animal()
     assert animal.location == WorldCell(animal.world, 3, 3)
@@ -117,6 +132,8 @@ def test_step_specific_invalid_location():
     animal.step(new_location=WorldCell(animal.world, 5, 5))
     assert animal.location == WorldCell(animal.world, 3, 3)
     assert animal.energy == 100  # No energy should have been spent.
+    out, _ = capsys.readouterr()
+    assert out == 'Error: Cannot move to (5, 5) from (3, 3).\n'
 
 
 def test_move():

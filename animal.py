@@ -44,7 +44,7 @@ class Animal(object):
     @energy.setter
     def energy(self, value):
         if not type(value) == int or value > self._max_energy or value < 0:
-            print('Error: Cannot set energy to {value}.')
+            print(f'Error: Cannot set energy to {value}.')
         else:
             self._energy = value
 
@@ -55,11 +55,14 @@ class Animal(object):
                     if cost > args[0].energy or cost < 0:
                         return
                 except TypeError:
-                    print('Error: "Cost" is not a valid number.')
+                    print(f'Error: {cost} is not a valid number.')
                 else:
                     # A truthy return value from func indicates the action was not performed.
-                    if not func(args[0], **kwargs):
+                    func_return_value = func(args[0], **kwargs)
+                    if not func_return_value:
                         setattr(args[0], 'energy', getattr(args[0], 'energy') - cost)
+                    else:
+                        print(func_return_value)
             return wrapper
         return real_decorator
 
