@@ -10,28 +10,32 @@ Ideas:
 
 
 class World(object):
-    def __init__(self, grid_size=10):
-        self._grid_size = grid_size
+    def __init__(self, size=10):
+        self._size = size
         self._grid = {
             (x, y): WorldCell(self, x, y)
-            for x in range(grid_size)
-            for y in range(grid_size)
+            for x in range(size)
+            for y in range(size)
         }
 
         self._animals = []
 
     def __repr__(self):
-        return f'World(grid_size={self._grid_size})'
+        return f'World(size={self._size})'
+
+    @property
+    def size(self):
+        return self._size
+
+    @property
+    def animals(self):
+        return self._animals
 
     def get_cell(self, x, y):
         try:
             return self._grid[(x, y)]
         except KeyError:
             return None
-
-    @property
-    def animals(self):
-        return self._animals
 
     def add_animal(self, animal):
         self._animals.append(animal)

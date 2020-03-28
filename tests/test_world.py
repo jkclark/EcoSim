@@ -44,4 +44,4 @@ def test_remove_animal_no_such_animal(capsys):
     world.remove_animal(animal_not_present)
     assert world.animals == [animal]
     out, _ = capsys.readouterr()
-    assert out == 'Error: Cannot remove animal from World(grid_size=10).\n'
+    assert out == 'Error: Cannot remove animal from World(size=10).\n'
