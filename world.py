@@ -6,8 +6,6 @@ Ideas:
     - Some spaces should have water which makes the inaccessible to certain animals.
         - Water is also drinkable.
     - Maybe cells should have enter() and exit() functions?
-
-    - Spaces should know what Animals are in them.
 '''
 
 
