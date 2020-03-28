@@ -1,9 +1,10 @@
 from animal import Animal
-from world import World, WorldCell
+from lib.test_helpers import create_test_world
+from world import WorldCell
 
 
 def create_test_animal(x_pos=3, y_pos=3, speed=1):
-    world = World()
+    world = create_test_world()
     animal = Animal(world, x_pos, y_pos, speed)
     return animal
 

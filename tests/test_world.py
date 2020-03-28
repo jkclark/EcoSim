@@ -1,13 +1,5 @@
-from world import World, WorldCell
-
-
-def create_test_world():
-    return World()
-
-
-class Bunch():
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+from lib.test_helpers import Bunch, create_test_world
+from world import WorldCell
 
 
 def test_get_cell_success():
@@ -28,7 +20,7 @@ def test_get_cell_invalid_location():
     assert not cell
 
 
-def test_add_and_remove_animal_success():
+def test_add_and_remove_animal():
     world = create_test_world()
     assert world.animals == []
 
@@ -48,8 +40,8 @@ def test_remove_animal_no_such_animal(capsys):
     world.add_animal(animal)
     assert world.animals == [animal]
 
-    fake_animal = Bunch()
-    world.remove_animal(fake_animal)
+    animal_not_present = Bunch()
+    world.remove_animal(animal_not_present)
     assert world.animals == [animal]
     out, _ = capsys.readouterr()
     assert out == 'Error: Cannot remove animal from World(grid_size=10).\n'
