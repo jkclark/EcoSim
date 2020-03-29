@@ -49,6 +49,10 @@ class World(object):
         except ValueError:
             print(f'Error: Cannot remove animal from {self}.')
 
+    def do_tick(self):
+        for animal in self.animals:
+            animal.do_turn()
+
 
 class WorldCell(object):
     def __init__(self, world, x_pos, y_pos):

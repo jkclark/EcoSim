@@ -68,16 +68,12 @@ class Animal(object):
 
     def do_turn(self):
         CHANCE_DO_NOTHING = 0
-        CHANCE_MOVE = 1
-        actions = ['pass', 'move']
-        action = choices(actions, weights=[CHANCE_DO_NOTHING, CHANCE_MOVE], k=1)[0]
+        CHANCE_STEP = 1
+        actions = ['pass', 'step']
+        action = choices(actions, weights=[CHANCE_DO_NOTHING, CHANCE_STEP], k=1)[0]
         if action == 'pass':
             pass
-        if action == 'move':
-            self.move()
-
-    def move(self):
-        for i in range(self._speed):
+        if action == 'step':
             self.step()
 
     @spend_energy(10)

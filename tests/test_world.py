@@ -2,6 +2,11 @@ from lib.test_helpers import Bunch, create_test_world
 from world import WorldCell
 
 
+def test_size():
+    world = create_test_world()
+    assert world.size == 10
+
+
 def test_get_cell_success():
     world = create_test_world()
     cell = world.get_cell(3, 3)
