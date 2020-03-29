@@ -50,7 +50,8 @@ class World(object):
             print(f'Error: Cannot remove animal from {self}.')
 
     def do_tick(self):
-        for animal in self.animals:
+        # Faster animals go first
+        for animal in sorted(self.animals, key=lambda animal: animal.speed, reverse=True):
             animal.do_turn()
 
 

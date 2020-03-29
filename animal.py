@@ -1,4 +1,4 @@
-from random import choice, choices
+from random import choice
 
 
 class Animal(object):
@@ -67,14 +67,7 @@ class Animal(object):
         return real_decorator
 
     def do_turn(self):
-        CHANCE_DO_NOTHING = 0
-        CHANCE_STEP = 1
-        actions = ['pass', 'step']
-        action = choices(actions, weights=[CHANCE_DO_NOTHING, CHANCE_STEP], k=1)[0]
-        if action == 'pass':
-            pass
-        if action == 'step':
-            self.step()
+        self.step()
 
     @spend_energy(10)
     def step(self, new_location=None):
