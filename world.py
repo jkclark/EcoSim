@@ -49,6 +49,11 @@ class World(object):
         except ValueError:
             print(f'Error: Cannot remove animal from {self}.')
 
+    def do_tick(self):
+        # Faster animals go first
+        for animal in sorted(self.animals, key=lambda animal: animal.speed, reverse=True):
+            animal.do_turn()
+
 
 class WorldCell(object):
     def __init__(self, world, x_pos, y_pos):
