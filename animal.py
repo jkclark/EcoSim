@@ -38,6 +38,10 @@ class Animal(object):
         self._location = new_location
 
     @property
+    def speed(self):
+        return self._speed
+
+    @property
     def energy(self):
         return self._energy
 
