@@ -29,20 +29,34 @@ class AnimalTrackerWidget(tk.Frame):
         super().__init__(master=master, bg='blue')
         self._animal = animal
 
+        self._location_textvar = tk.StringVar()
+        self._location_textvar.set('Location: ' + str(animal.location))
+
+        self._speed_textvar = tk.StringVar()
+        self._speed_textvar.set('Speed: ' + str(animal.speed))
+
+        self._energy_textvar = tk.StringVar()
+        self._energy_textvar.set('Energy: ' + str(animal.energy))
+
         self.create_ui()
 
     def create_ui(self):
         animal_label = tk.Label(master=self, text='Animal')
         animal_label.pack()
 
-        location_label = tk.Label(master=self, text=f'Location: {self._animal.location}')
+        location_label = tk.Label(master=self, textvariable=self._location_textvar)
         location_label.pack()
 
-        speed_label = tk.Label(master=self, text=f'Speed: {self._animal.speed}')
+        speed_label = tk.Label(master=self, textvariable=self._speed_textvar)
         speed_label.pack()
 
-        energy_label = tk.Label(master=self, text=f'Energy: {self._animal.energy}')
+        energy_label = tk.Label(master=self, textvariable=self._energy_textvar)
         energy_label.pack()
+
+    def update_labels(self):
+        self._location_textvar.set('Location: ' + str(self._animal.location))
+        self._speed_textvar.set('Speed: ' + str(self._animal.speed))
+        self._energy_textvar.set('Energy: ' + str(self._animal.energy))
 
 
 class UI():
@@ -54,8 +68,14 @@ class UI():
         self.create_map_and_controls(world.size)
         self.square_details = self.create_square_details()
 
+        self._tracker_widget = None
+
     def start(self):
         self._window.mainloop()
+
+    def do_world_tick(self):
+        self._world.do_tick()
+        self._tracker_widget.update_labels()
 
     def create_entity_tracker(self):
         entity_tracker = tk.Frame(master=self._window)
@@ -84,7 +104,7 @@ class UI():
 
         controls = tk.Frame(master=center_frame)
         controls.grid(row=1, column=0)
-        button = tk.Button(master=controls, text='Click me!', command=self._world.do_tick)
+        button = tk.Button(master=controls, text='Click me!', command=self.do_world_tick)
         button.pack()
 
         center_frame.grid(row=0, column=1)
@@ -119,4 +139,5 @@ class UI():
             if type(child) == AnimalTrackerWidget:
                 child.destroy()
 
-        AnimalTrackerWidget(self._entity_tracker, animal).pack()
+        self._tracker_widget = AnimalTrackerWidget(self._entity_tracker, animal)
+        self._tracker_widget.pack()
