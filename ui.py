@@ -64,20 +64,23 @@ class UI():
         self._world = world
         self._window = tk.Tk()
 
+        self._tracker_widget = None
         self._grid_frame = None
+        self._detail_location_textvar = tk.StringVar()
+        self._detail_location_textvar.set('(x, y)')
 
         self._entity_tracker = self.create_entity_tracker()
         self.create_map_and_controls(world.size)
         self.square_details = self.create_square_details()
-
-        self._tracker_widget = None
 
     def start(self):
         self._window.mainloop()
 
     def do_world_tick(self):
         self._world.do_tick()
-        self._tracker_widget.update_labels()
+
+        if self._tracker_widget:
+            self._tracker_widget.update_labels()
 
     def create_entity_tracker(self):
         entity_tracker = tk.Frame(master=self._window)
@@ -111,7 +114,31 @@ class UI():
 
         center_frame.grid(row=0, column=1)
 
+    def create_square_details(self):
+        square_details = tk.Frame(master=self._window)
+
+        title_label = tk.Label(master=square_details, textvariable=self._detail_location_textvar)
+        title_label.grid(row=0, column=0)
+
+        animals_label = tk.Label(master=square_details, text='Animals:')
+        animals_label.grid(row=1, column=0)
+
+        square_details.pack_propagate(False)
+        square_details.grid(row=0, column=2)
+
+        return square_details
+
+    def set_entity_tracker_details(self, animal):
+        for child in self._entity_tracker.winfo_children():
+            if type(child) == AnimalTrackerWidget:
+                child.destroy()
+
+        self._tracker_widget = AnimalTrackerWidget(self._entity_tracker, animal)
+        self._tracker_widget.pack()
+
     def set_details_for_square(self, row, col):
+        self._detail_location_textvar.set(f'({row}, {col})')
+
         # Color in only this button on the grid
         for r in range(self._world.size):
             for c in range(self._world.size):
@@ -130,25 +157,3 @@ class UI():
         for index, animal in enumerate(cell.animals):
             animal_widget = AnimalDescriptorWidget(self, animal)
             animal_widget.grid(row=index + 2, column=0)
-
-    def create_square_details(self):
-        square_details = tk.Frame(master=self._window)
-
-        title_label = tk.Label(master=square_details, text='(x, y)')
-        title_label.grid(row=0, column=0)
-
-        animals_label = tk.Label(master=square_details, text='Animals:')
-        animals_label.grid(row=1, column=0)
-
-        square_details.pack_propagate(False)
-        square_details.grid(row=0, column=2)
-
-        return square_details
-
-    def set_entity_tracker_details(self, animal):
-        for child in self._entity_tracker.winfo_children():
-            if type(child) == AnimalTrackerWidget:
-                child.destroy()
-
-        self._tracker_widget = AnimalTrackerWidget(self._entity_tracker, animal)
-        self._tracker_widget.pack()
