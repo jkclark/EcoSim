@@ -64,6 +64,8 @@ class UI():
         self._world = world
         self._window = tk.Tk()
 
+        self._grid_frame = None
+
         self._entity_tracker = self.create_entity_tracker()
         self.create_map_and_controls(world.size)
         self.square_details = self.create_square_details()
@@ -88,7 +90,7 @@ class UI():
 
     def create_map_and_controls(self, grid_size):
         center_frame = tk.Frame(master=self._window)
-        grid_holder = tk.Frame(master=center_frame)
+        self._grid_frame = grid_holder = tk.Frame(master=center_frame)
 
         for i in range(grid_size):
             for j in range(grid_size):
@@ -110,6 +112,16 @@ class UI():
         center_frame.grid(row=0, column=1)
 
     def set_details_for_square(self, row, col):
+        # Color in only this button on the grid
+        for r in range(self._world.size):
+            for c in range(self._world.size):
+                if self._grid_frame.grid_slaves(r, c):
+                    btn = self._grid_frame.grid_slaves(r, c)[0]
+                    if r == row and c == col:
+                        btn.config(bg='red')
+                    else:
+                        btn.config(bg='light gray')
+
         for child in self.square_details.winfo_children():
             if type(child) == AnimalDescriptorWidget:
                 child.destroy()
@@ -134,7 +146,6 @@ class UI():
         return square_details
 
     def set_entity_tracker_details(self, animal):
-        global entity_tracker
         for child in self._entity_tracker.winfo_children():
             if type(child) == AnimalTrackerWidget:
                 child.destroy()
