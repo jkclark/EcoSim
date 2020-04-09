@@ -1,5 +1,7 @@
 from random import choice
 
+from food import Food
+
 
 class Animal(object):
     '''A superclass for each animal species.
@@ -43,6 +45,8 @@ class Animal(object):
 
     @energy.setter
     def energy(self, value):
+        # TODO: Allow values greater than self._max_energy to be passed in.
+        #       The result should be the animal's energy being set to self._max_energy
         if not type(value) == int or value > self._max_energy or value < 0:
             print(f'Error: Cannot set energy to {value}.')
         else:
@@ -65,6 +69,12 @@ class Animal(object):
                         print(func_return_value)
             return wrapper
         return real_decorator
+
+    def eat(self, food):
+        if not type(food) == Food:
+            print(f'Error: Cannot eat non-Food object {food}.')
+        else:
+            self.energy += food.nutrition
 
     def do_turn(self):
         self.step()

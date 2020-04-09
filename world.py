@@ -8,6 +8,8 @@ Ideas:
     - Maybe cells should have enter() and exit() functions?
 '''
 
+from food import Food
+
 
 class World(object):
     def __init__(self, size=10):
@@ -62,6 +64,7 @@ class WorldCell(object):
         self._y_pos = y_pos
 
         self._animals = []
+        self._food = []
 
     def __eq__(self, other):
         if (
@@ -95,6 +98,7 @@ class WorldCell(object):
         return self._animals
 
     def add_animal(self, animal):
+        # TODO: Add type check for Animal
         self._animals.append(animal)
 
     def remove_animal(self, animal):
@@ -113,3 +117,19 @@ class WorldCell(object):
             if self._world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
             and not x_delta == y_delta == 0
         ]
+
+    @property
+    def food(self):
+        return self._food
+
+    def add_food(self, food):
+        if not type(food) == Food:
+            print(f'Error: Cannot add non-Food object {food} to {self}.food.')
+        else:
+            self._food.append(food)
+
+    def remove_food(self, food):
+        try:
+            self._food.remove(food)
+        except ValueError:
+            print(f'Error: Cannot remove food from {self}.')
