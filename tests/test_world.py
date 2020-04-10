@@ -50,3 +50,6 @@ def test_remove_animal_no_such_animal(capsys):
     assert world.animals == [animal]
     out, _ = capsys.readouterr()
     assert out == 'Error: Cannot remove animal from World(size=10).\n'
+
+
+# TODO: Test add_food and remove_food

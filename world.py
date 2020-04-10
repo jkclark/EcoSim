@@ -107,17 +107,6 @@ class WorldCell(object):
         except ValueError:
             print(f'Error: Cannot remove animal from {self}.')
 
-    def get_adjacent_cells(self):
-        # FIXME: I don't like the 'and' condition here because we check that
-        #        condition up to 9 times, when we know it will apply only once.
-        return [
-            self._world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
-            for x_delta in [-1, 0, 1]
-            for y_delta in [-1, 0, 1]
-            if self._world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
-            and not x_delta == y_delta == 0
-        ]
-
     @property
     def food(self):
         return self._food
@@ -133,3 +122,14 @@ class WorldCell(object):
             self._food.remove(food)
         except ValueError:
             print(f'Error: Cannot remove food from {self}.')
+
+    def get_adjacent_cells(self):
+        # FIXME: I don't like the 'and' condition here because we check that
+        #        condition up to 9 times, when we know it will apply only once.
+        return [
+            self._world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
+            for x_delta in [-1, 0, 1]
+            for y_delta in [-1, 0, 1]
+            if self._world.get_cell(self.x_pos + x_delta, self.y_pos + y_delta)
+            and not x_delta == y_delta == 0
+        ]

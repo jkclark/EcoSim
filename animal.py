@@ -1,7 +1,5 @@
 from random import choice
 
-from food import Food
-
 
 class Animal(object):
     '''A superclass for each animal species.
@@ -14,6 +12,7 @@ class Animal(object):
 
     def __init__(self, world, x_pos, y_pos, speed):
         # Location
+        # TODO: What happens if (x_pos, y_pos) isn't a valid location in world?
         self._world = world
         self._location = world.get_cell(x_pos, y_pos)
         world.add_animal(self)
@@ -70,12 +69,6 @@ class Animal(object):
             return wrapper
         return real_decorator
 
-    def eat(self, food):
-        if not type(food) == Food:
-            print(f'Error: Cannot eat non-Food object {food}.')
-        else:
-            self.energy += food.nutrition
-
     def do_turn(self):
         self.step()
 
@@ -90,3 +83,11 @@ class Animal(object):
                 return f'Error: Cannot move to {new_location} from {self.location}.'
         else:
             self.location = choice(self.location.get_adjacent_cells())
+
+    def eat(self, food):
+        if food not in self.location.food:
+            print(f'Error: Animal at {self.location} cannot eat food which is not at its location.')
+        else:
+            self.energy += food.nutrition
+            self.location.remove_food(food)
+            # NOTE: Is there any real benefit to calling `del food` here?
