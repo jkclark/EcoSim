@@ -12,6 +12,7 @@ class Animal(object):
 
     def __init__(self, world, x_pos, y_pos, speed):
         # Location
+        # TODO: What happens if (x_pos, y_pos) isn't a valid location in world?
         self._world = world
         self._location = world.get_cell(x_pos, y_pos)
         world.add_animal(self)
@@ -47,7 +48,9 @@ class Animal(object):
 
     @energy.setter
     def energy(self, value):
-        if not type(value) == int or value > self._max_energy or value < 0:
+        # TODO: Allow values greater than self._max_energy to be passed in.
+        #       The result should be the animal's energy being set to self._max_energy
+        if not isinstance(value, int) or value > self._max_energy or value < 0:
             print(f'Error: Cannot set energy to {value}.')
         else:
             self._energy = value
@@ -84,3 +87,11 @@ class Animal(object):
                 return f'Error: Cannot move to {new_location} from {self.location}.'
         else:
             self.location = choice(self.location.get_adjacent_cells())
+
+    def eat(self, food):
+        if food not in self.location.food:
+            print(f'Error: Animal at {self.location} cannot eat food which is not at its location.')
+        else:
+            self.energy += food.nutrition
+            self.location.remove_food(food)
+            # NOTE: Is there any real benefit to calling `del food` here?

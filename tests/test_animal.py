@@ -1,12 +1,7 @@
 from animal import Animal
-from lib.test_helpers import create_test_world
+from food import Food
+from lib.test_helpers import create_test_animal
 from world import WorldCell
-
-
-def create_test_animal(x_pos=3, y_pos=3, speed=1):
-    world = create_test_world()
-    animal = Animal(world, x_pos, y_pos, speed)
-    return animal
 
 
 def test_repr():
@@ -28,13 +23,11 @@ def test_set_energy_non_int(capsys):
 
     animal.energy = 50.00
     assert animal.energy == 100
-    out, _ = capsys.readouterr()
-    assert out == 'Error: Cannot set energy to 50.0.\n'
+    assert capsys.readouterr()[0] == 'Error: Cannot set energy to 50.0.\n'
 
     animal.energy = "fifty"
     assert animal.energy == 100
-    out, _ = capsys.readouterr()
-    assert out == 'Error: Cannot set energy to fifty.\n'
+    assert capsys.readouterr()[0] == 'Error: Cannot set energy to fifty.\n'
 
 
 def test_set_energy_negative(capsys):
@@ -43,8 +36,7 @@ def test_set_energy_negative(capsys):
 
     animal.energy = -50
     assert animal.energy == 100
-    out, _ = capsys.readouterr()
-    assert out == 'Error: Cannot set energy to -50.\n'
+    assert capsys.readouterr()[0] == 'Error: Cannot set energy to -50.\n'
 
 
 def test_set_energy_greater_than_max(capsys):
@@ -53,8 +45,7 @@ def test_set_energy_greater_than_max(capsys):
 
     animal.energy = 200
     assert animal.energy == 100
-    out, _ = capsys.readouterr()
-    assert out == 'Error: Cannot set energy to 200.\n'
+    assert capsys.readouterr()[0] == 'Error: Cannot set energy to 200.\n'
 
 
 # TODO: We should also check to see if the decorated function gets called or not.
@@ -71,7 +62,7 @@ def test_spend_energy_success():
     assert animal.energy == 99
 
 
-def test_spend_energy_insufficient_energy(capsys):
+def test_spend_energy_insufficient_energy():
     animal = create_test_animal()
 
     @Animal.spend_energy(101)
@@ -95,8 +86,7 @@ def test_spend_energy_invalid_value(capsys):
     assert animal.energy == 100
     animal.test_func()
     assert animal.energy == 100
-    out, _ = capsys.readouterr()
-    assert out == 'Error: abc is not a valid number.\n'
+    assert capsys.readouterr()[0] == 'Error: abc is not a valid number.\n'
 
 
 def test_step_random():
@@ -133,5 +123,25 @@ def test_step_specific_invalid_location(capsys):
     animal.step(new_location=WorldCell(animal.world, 5, 5))
     assert animal.location == WorldCell(animal.world, 3, 3)
     assert animal.energy == 100  # No energy should have been spent.
-    out, _ = capsys.readouterr()
-    assert out == 'Error: Cannot move to (5, 5) from (3, 3).\n'
+    assert capsys.readouterr()[0] == 'Error: Cannot move to (5, 5) from (3, 3).\n'
+
+
+def test_eat():
+    animal = create_test_animal()
+    food = Food(animal.world, 3, 3, 10)
+    animal.energy = 75
+
+    animal.eat(food)
+    assert animal.world.get_cell(3, 3).food == []
+    assert animal.energy == 85
+
+
+def test_eat_food_different_location(capsys):
+    animal = create_test_animal()
+    food = Food(animal.world, 0, 0, 10)
+
+    animal.eat(food)
+    assert animal.world.get_cell(0, 0).food == [food]
+    assert animal.energy == 100
+    assert capsys.readouterr()[0] == \
+        'Error: Animal at (3, 3) cannot eat food which is not at its location.\n'
