@@ -29,4 +29,4 @@ jobs:
             flake8 --exclude=venv* --statistics
             pytest -v --cov-config=.coveragerc --cov --cov-report=xml
       - codecov/upload:
-          file: /home/coverage.xml
+          file: /home/circleci/repo/coverage.xml
