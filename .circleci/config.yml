@@ -24,9 +24,9 @@ jobs:
       - run:
           name: Setup Code Climate test-reporter
           command: |
-          # download test reporter as a static binary
+            # download test reporter as a static binary
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /home/circleci/repo/cc-test-reporter
-            chmod +x ./cc-test-reporter#
+            chmod +x ./cc-test-reporter
       # Step 3: run linter and tests
       - run:
           name: run tests
