@@ -1,7 +1,5 @@
 # Python CircleCI 2.0 configuration file
 version: 2.1
-orbs:
-  codecov: codecov/codecov@1.0.2
 jobs:
   build:
     docker:
@@ -36,5 +34,3 @@ jobs:
             flake8 --exclude=venv* --statistics
             coverage run -m pytest -v --cov-config=.coveragerc --cov --cov-report=xml
             /home/circleci/repo/cc-test-reporter after-build --coverage-input-type coverage.py
-      - codecov/upload:
-          file: /home/circleci/repo/coverage.xml
