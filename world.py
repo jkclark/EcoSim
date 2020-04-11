@@ -8,6 +8,7 @@ Ideas:
     - Maybe cells should have enter() and exit() functions?
 '''
 
+from animal import Animal
 from food import Food
 
 
@@ -40,7 +41,10 @@ class World(object):
             return None
 
     def add_animal(self, animal):
-        self._animals.append(animal)
+        if not isinstance(animal, Animal):
+            print(f'Error: Cannot add non-Animal object {animal} to {self}.')
+        else:
+            self._animals.append(animal)
 
         # Add the animal to its current WorldCell too
         self.get_cell(animal.location.x_pos, animal.location.y_pos).add_animal(animal)
@@ -98,8 +102,10 @@ class WorldCell(object):
         return self._animals
 
     def add_animal(self, animal):
-        # TODO: Add type check for Animal
-        self._animals.append(animal)
+        if not isinstance(animal, Animal):
+            print(f'Error: Cannot add non-Animal object {animal} to {self}.')
+        else:
+            self._animals.append(animal)
 
     def remove_animal(self, animal):
         try:
@@ -112,8 +118,8 @@ class WorldCell(object):
         return self._food
 
     def add_food(self, food):
-        if not type(food) == Food:
-            print(f'Error: Cannot add non-Food object {food} to {self}.food.')
+        if not isinstance(food, Food):
+            print(f'Error: Cannot add non-Food object {food} to {self}.')
         else:
             self._food.append(food)
 

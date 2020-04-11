@@ -46,7 +46,7 @@ class Animal(object):
     def energy(self, value):
         # TODO: Allow values greater than self._max_energy to be passed in.
         #       The result should be the animal's energy being set to self._max_energy
-        if not type(value) == int or value > self._max_energy or value < 0:
+        if not isinstance(value, int) or value > self._max_energy or value < 0:
             print(f'Error: Cannot set energy to {value}.')
         else:
             self._energy = value
