@@ -68,6 +68,7 @@ class UI():
         self._grid_frame = None
         self._detail_location_textvar = tk.StringVar()
         self._detail_location_textvar.set('(x, y)')
+        self._selected_location = None
 
         self._entity_tracker = self.create_entity_tracker()
         self.create_map_and_controls(world.size)
@@ -81,6 +82,9 @@ class UI():
 
         if self._tracker_widget:
             self._tracker_widget.update_labels()
+
+        if self._selected_location:
+            self.set_details_for_square(*self._selected_location)
 
     def create_entity_tracker(self):
         entity_tracker = tk.Frame(master=self._window)
@@ -137,6 +141,8 @@ class UI():
         self._tracker_widget.pack()
 
     def set_details_for_square(self, row, col):
+        self._selected_location = (row, col)
+
         self._detail_location_textvar.set(f'({row}, {col})')
 
         # Color in only this button on the grid
