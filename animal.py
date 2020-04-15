@@ -79,6 +79,7 @@ class Animal(object):
     @spend_energy(10)
     def step(self, new_location=None):
         '''Step to a specific location, or step in a random direction if no location is provided.'''
+        # TODO: I don't think this updates WorldCell.animals.
         adjacent_cells = self.location.get_adjacent_cells()
         if new_location:
             if new_location in adjacent_cells:

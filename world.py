@@ -62,6 +62,7 @@ class World(object):
 
 
 class WorldCell(object):
+    # TODO: Make this class iterable to allow unpacking of (x_pos, y_pos).
     def __init__(self, world, x_pos, y_pos):
         self._world = world
         self._x_pos = x_pos
