@@ -40,6 +40,10 @@ class AnimalTrackerWidget(tk.Frame):
 
         self.create_ui()
 
+    @property
+    def animal(self):
+        return self._animal
+
     def create_ui(self):
         animal_label = tk.Label(master=self, text='Animal')
         animal_label.pack()
@@ -82,6 +86,18 @@ class UI():
 
         if self._tracker_widget:
             self._tracker_widget.update_labels()
+
+            row = self._tracker_widget.animal.location.x_pos
+            col = self._tracker_widget.animal.location.y_pos
+
+            for r in range(self._world.size):
+                for c in range(self._world.size):
+                    if self._grid_frame.grid_slaves(r, c):
+                        btn = self._grid_frame.grid_slaves(r, c)[0]
+                        if r == row and c == col:
+                            btn.config(bg='blue')
+                        else:
+                            btn.config(bg='light gray')
 
         if self._selected_location:
             self.set_details_for_square(*self._selected_location)
@@ -145,15 +161,18 @@ class UI():
 
         self._detail_location_textvar.set(f'({row}, {col})')
 
+        # FIXME: For some reason, setting the background color here and also in
+        #        do_world_tick doesn't work. Need to investigate what actually happens
+        #        when you call btn.config(bg='').
         # Color in only this button on the grid
-        for r in range(self._world.size):
-            for c in range(self._world.size):
-                if self._grid_frame.grid_slaves(r, c):
-                    btn = self._grid_frame.grid_slaves(r, c)[0]
-                    if r == row and c == col:
-                        btn.config(bg='red')
-                    else:
-                        btn.config(bg='light gray')
+        #  for r in range(self._world.size):
+        #       for c in range(self._world.size):
+        #           if self._grid_frame.grid_slaves(r, c):
+        #              btn = self._grid_frame.grid_slaves(r, c)[0]
+        #              if r == row and c == col:
+        #                  btn.config(bg='red')
+        #              else:
+        #                  btn.config(bg='light gray')
 
         for child in self.square_details.winfo_children():
             if type(child) == AnimalDescriptorWidget:

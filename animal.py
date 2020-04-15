@@ -21,6 +21,8 @@ class Animal(object):
 
         self._energy = self._max_energy = 100
 
+        self.q = {}
+
     def __repr__(self):
         return f'Animal at {self._location}'
 
@@ -74,11 +76,17 @@ class Animal(object):
         return real_decorator
 
     def do_turn(self):
-        self.step()
+        # HACK: This is not an elegant way to call the q_step function.
+        #       Maybe we can give Animal a 'mode' attribute which controls this.
+        if self.q:
+            self.q_step()
+        else:
+            self.step()
 
     @spend_energy(10)
     def step(self, new_location=None):
         '''Step to a specific location, or step in a random direction if no location is provided.'''
+        # TODO: I don't think this updates WorldCell.animals
         adjacent_cells = self.location.get_adjacent_cells()
         if new_location:
             if new_location in adjacent_cells:
@@ -87,6 +95,11 @@ class Animal(object):
                 return f'Error: Cannot move to {new_location} from {self.location}.'
         else:
             self.location = choice(self.location.get_adjacent_cells())
+
+    def q_step(self):
+        next_moves_to_values = self.q[(self.location.x_pos, self.location.y_pos)]
+        new_location = max(next_moves_to_values, key=next_moves_to_values.get)
+        self.location = self.world.get_cell(*new_location)
 
     def eat(self, food):
         if food not in self.location.food:

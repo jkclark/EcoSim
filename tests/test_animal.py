@@ -89,6 +89,7 @@ def test_spend_energy_invalid_value(capsys):
     assert capsys.readouterr()[0] == 'Error: abc is not a valid number.\n'
 
 
+# TODO: These tests should make sure that WorldCell.animals gets updated.
 def test_step_random():
     '''Test stepping to a randomly-chosen location.'''
     animal = create_test_animal()
